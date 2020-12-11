@@ -1,0 +1,35 @@
+#
+# SECURITY WARNING: it is CRITICAL that this file & directory are NOT accessible directly via a web browser!
+# https://nette.org/security-warning
+#
+php:
+	date.timezone: Europe/Prague
+
+application:
+	errorPresenter: Error
+	mapping:
+		*: App\Module\*\Presenters\*Presenter
+
+parameters:
+	emails:
+		info: 'info@archeologie.cz'
+
+session:
+	expiration: 14 days
+
+translation:
+    default: en
+    fallback: [en_US, en]
+    whitelist: ['cs', 'en', 'de']
+    dirs: [/app/locale]
+
+services:
+	- App\Model\Authenticator
+	- App\Model\LocationsRepository
+	- App\Model\SettingsRepository
+	- App\Model\ThematicsRepository
+	- App\Model\UsersRepository
+	router: App\Router\RouterFactory::createRouter
+
+extensions:
+    translation: Kdyby\Translation\DI\TranslationExtension

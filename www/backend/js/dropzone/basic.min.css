@@ -1,0 +1,11 @@
+form .dropzone {position:relative; border: 0}
+form .dropzone .dz-preview .dz-image { border-radius: 0 }
+form .dropzone .dz-preview{position:relative;display:inline-block;width:120px;margin:0.5em}
+form .dropzone .dz-preview .dz-progress{display:block;height:15px;border:1px solid #aaa}
+form .dropzone .dz-preview .dz-progress .dz-upload{display:block;height:100%;width:0;background:green}
+form .dropzone .dz-preview .dz-error-message{color:red;display:none}
+form .dropzone .dz-preview.dz-error .dz-error-message,.dropzone .dz-preview.dz-error .dz-error-mark{display:block}
+form .dropzone .dz-preview.dz-success .dz-success-mark{display:block}
+form .dropzone .dz-preview .dz-error-mark,.dropzone .dz-preview .dz-success-mark{position:absolute;display:none;left:30px;top:30px;width:54px;height:58px;left:50%;margin-left:-27px}
+form .dropzone .dz-message span {display: block}
+form .dropzone .dz-message:after {content: 'Vybrat soubory'; display:inline-block; background:#333; margin-top: 20px; border-radius: 5px; padding: 10px 20px; text-transform: uppercase; color: #fff; font-weight: bold}

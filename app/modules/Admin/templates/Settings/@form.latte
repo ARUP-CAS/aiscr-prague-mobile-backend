@@ -1,0 +1,37 @@
+{form settingForm}
+	<div n:class="input, text">
+		{label geo_json /}
+		{var $img = $basePath.'/data/settings/'.$row->geo_json}
+
+		<div style="display: flex; flex-wrap: wrap; align-items: center; height: 55px;">
+			<a href="{$img}" target="_blank" n:if="!empty($row->geo_json)">zobrazit</a>
+			<div style="width: 100%;">{input geo_json}</div>
+		</div>
+	</div>
+
+	<div class="inputs-submit">
+		<div class="input storno">
+			<a n:href="default" class="button-icon">
+				<span class="icon transition">
+					<i></i>
+				</span>
+				<span class="label transition">Zrušit</span>
+			</a>
+		</div>
+
+		<div class="input submit">
+			<button class="button-icon" n:name="save">
+				<span class="icon bg-c-2">
+					<i></i>
+				</span>
+				<span class="label bg-c-1 bg-c-2-hover transition">Uložit</span>
+			</button>
+		</div>
+	</div>
+{/form}
+
+<script>
+$(document).ready(function(){
+	
+});
+</script>

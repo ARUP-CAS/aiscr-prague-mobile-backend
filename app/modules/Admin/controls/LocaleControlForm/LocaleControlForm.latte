@@ -1,0 +1,55 @@
+<div class="row-locale">
+	<label>
+		{$label}
+
+		{if count($localeList)>1}
+			{foreach $localeList as $locale}
+				<a href="#" data-locale="{$locale}" n:class="label, $iterator->isFirst() ? label-success : label-default">{$locale|upper}</a>
+			{/foreach}
+		{/if}
+	</label>
+
+	<div n:foreach="$localeList as $locale" n:class="locale-control, form-group, !$iterator->isFirst() ? hide" data-locale="{$locale}">
+		{var $data = $control->getLocaleValue($table, $table_col, $table_col_id, $locale)}
+
+		{var $data = (object) ($data ? $data->toArray() : [])}
+
+		{if count((array) $data)>0 && $table=='settings_translations'}
+			{var $data->{'value_'.$data->settings_id} = $data->value}
+		{/if}
+
+		{if $type=='input'}
+			<input type="text" name="{$name}[{$locale}]" id="frm-{$frm}-{$name}-{$locale}" value="{$data && isset($data->{$table_name ? $table_name : $name}) ? $data->{$table_name ? $table_name : $name}}" class="form-control {$class}">
+		{elseif $type=='textarea'}
+			<textarea name="{$name}[{$locale}]" id="frm-{$frm}-{$name}-{$locale}" class="form-control {$class}">{$data && isset($data->{$table_name ? $table_name : $name}) ? $data->{$table_name ? $table_name : $name}}</textarea>
+		{elseif $type=='file'}
+			<input type="file" name="{$name}[{$locale}]" id="frm-{$frm}-{$name}-{$locale}" class="form-control {$class}"> {if $data && isset($data->{$table_name ? $table_name : $name}) && !empty($data->{$table_name ? $table_name : $name})}Nahraný soubor: {$data->{$table_name ? $table_name : $name}}{/if}
+		{/if}
+	</div>
+</div>
+
+<script>
+$(document).on('click', '.row-locale label .label, .locale-list-nav a', function(e){
+	e.preventDefault();
+	$this = $(this);
+	var locale = $this.attr('data-locale');
+
+	$('.row-locale').each(function(){
+		$(this).find('label').find('.label').removeClass('label-success');
+		$(this).find('label').find('.label').addClass('label-default');
+		$(this).find('label').find('.label[data-locale="'+locale+'"]').removeClass('label-default');
+		$(this).find('label').find('.label[data-locale="'+locale+'"]').addClass('label-success');
+		
+		$(this).find('.locale-control').addClass('hide');
+		$(this).find('.locale-control[data-locale="'+locale+'"]').removeClass('hide');
+	});
+
+	$('.data-inputs-block-locale').each(function(){
+		$('.locale-list-nav a').removeClass('label-success');
+		$('.locale-list-nav a[data-locale="'+locale+'"]').addClass('label-success');
+
+		$(this).addClass('hide');
+		$('.data-inputs-block-locale[data-locale="'+locale+'"]').removeClass('hide');
+	});
+});
+</script>

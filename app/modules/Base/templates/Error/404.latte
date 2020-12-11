@@ -1,0 +1,12 @@
+{layout '../../../Front/templates/@layout.latte'}
+
+{block content}
+<div class="wrapper wrapper--content content error-page error-page--404">
+	<div class="wrapper__container error-page__content">
+		<h1 class="error-page__title" n:block="title">404</h1>
+		<div class="error-page__text">
+			{_locale.general.error404text|noescape}
+			<a n:href=":Front:Default:" class="error-page__button button">{_locale.general.error404button|noescape}</a>
+		</div>
+	</div>
+</div>

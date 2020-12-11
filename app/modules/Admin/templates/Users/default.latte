@@ -1,0 +1,25 @@
+{block #content}
+<h1 n:block="title"><strong>Uživatelé</strong></h1>
+    
+<div class="list-general">
+
+    <a n:href="add" class="button-icon">
+        <span class="icon transition">
+            <i>+</i>
+        </span>
+        <span class="label transition">Přidat uživatele</span>
+    </a>
+
+    <p n:if="count($data)==0" class="clr"><br>Žádné záznamy nebyly nalezeny!</p>
+
+    <ul>
+        {foreach $data as $row}
+        <li>
+            <a n:href="edit, $row->id" class="title">{$row->email}</a>
+            <div class="col">{$row->group}</div>
+            <a n:href="delete, $row->id" class="action remove" onclick="return confirm('Opravdu si přejete smazat tento záznam?');"><i></i></a>
+            <a n:href="edit, $row->id" class="action edit"><i></i></a>
+        </li>
+        {/foreach}
+    </ul>
+</div>

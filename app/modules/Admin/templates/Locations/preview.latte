@@ -1,0 +1,31 @@
+<div style="width: calc(100% - 20px); margin: 0 auto; padding: 10px; border: 1px solid #eee;">
+	<h1>{$location->title}</h1>
+
+	{foreach $location->content as $row}
+		{dump $row}
+
+		{if $row->type=='text'}
+			{$row->content[0]->text|noescape}
+		{/if}
+
+		{if $row->type=='images'}
+			{foreach $row->content as $img}
+				<div style="position: relative; margin: 10px 0;">
+					<img src="{$img->url}" alt="" style="display: block; width: 100%;">
+					<div n:if="!empty($img->text)" style="position: absolute; left: 0; bottom: 0; width: calc(100% - 20px); background: rgba(0, 0, 0, .7); color: #fff; padding: 10px;">{$img->text}</div>
+				</div>
+			{/foreach}
+		{/if}
+
+		{if $row->type=='videos'}
+			{foreach $row->content as $vid}
+				{var $v = preg_match("/^(?:http(?:s)?:\/\/)?(?:www\.)?(?:m\.)?(?:youtu\.be\/|youtube\.com\/(?:(?:watch)?\?(?:.*&)?v(?:i)?=|(?:embed|v|vi|user)\/))([^\?&\"'>]+)/", $vid->urlVideo, $matches)}
+
+				<div style="position: relative; margin: 10px 0;">
+					<iframe width="360" height="215" src="https://www.youtube.com/embed/{$matches[1]}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+					<div n:if="!empty($vid->text)" style="position: absolute; left: 0; bottom: 0; width: calc(100% - 20px); background: rgba(0, 0, 0, .7); color: #fff; padding: 10px;">{$vid->text}</div>
+				</div>
+			{/foreach}
+		{/if}
+	{/foreach}
+</div>

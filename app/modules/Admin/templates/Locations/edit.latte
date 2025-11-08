@@ -1,0 +1,552 @@
+{block content}
+
+<h1 n:block="title"><strong>Upravit</strong> lokalitu</h1>
+
+{snippetArea locationFormWrapper}
+	{form locationForm, enctype=>"multipart/form-data"}
+
+		<div class="input text">
+			{control localeControlForm, 'input', $form->getName(), 'Nadpis', 'title', 'locations_translations', 'locations_id', $presenter->getParameter('id')}
+		</div>
+
+		<div class="input text">
+			{label type /}
+			{input type}
+		</div>
+
+		<div class="inputs-block">
+			<div class="input-cols-2">
+				<div class="input text">
+					{label latitude /}
+					{input latitude}
+				</div>
+				<div class="input text">
+					{label longitude /}
+					{input longitude}
+				</div>
+			</div>
+		</div>
+
+		<div class="input text">
+			{label address /}
+			{input address}
+		</div>
+
+		<div class="input text">
+			{label open_time /}
+			{input open_time}
+		</div>
+
+		<div class="input text">
+			{label time_of_visit /}
+			{input time_of_visit}
+		</div>
+
+		<div class="input text">
+			{label availability /}
+			{input availability}
+		</div>
+
+		<div class="input text">
+			{control localeControlForm, 'input', $form->getName(), 'Externí odkaz', 'external_link', 'locations_translations', 'locations_id', $presenter->getParameter('id')}
+		</div>
+
+		<div n:class="input, text">
+		{dump $row}
+			{label image /}
+			{var $img = $basePath.'/data/locations/'.$row->image}
+
+			<div style="display: flex; align-items: center; height: 55px;">
+				<a href="{$img}" target="_blank" n:if="!empty($row->image)"><img src="{$img|imageGenerator: true, 150, 100}" alt="" style="max-height: 55px; margin: 0 10px 0 0;" /></a>
+				{input image}
+			</div>
+		</div>
+
+		<h2>Obsah</h2>
+
+		{snippet sections}
+			{foreach $sections as $section}
+				<div class="content-section" id="{$section->id}" data-type="{$section->type}" data-value="{$section->value}">
+					{if $section->type=='text'}
+						<div class="head">
+							<h3>Text</h3>
+							<div class="controls">
+								<a href="" class="move"><i></i></a>
+								<a n:href="deleteSection, $section->id" class="delete"><i></i></a>
+							</div>
+						</div>
+						<div class="input text">
+							{control localeControlForm, 'textarea', 'locationForm', '', 'texts['.$section->value.']___text', 'locations_texts_translations', 'locations_texts_id', $section->value, 'ckeditor'}
+						</div>
+					{/if}
+
+					{if $section->type=='images'}
+						<div class="head">
+							<h3>Fotografie</h3>
+							<div class="controls">
+								<a href="" class="move"><i></i></a>
+								<a n:href="deleteSection, $section->id" class="delete"><i></i></a>
+							</div>
+						</div>
+
+						{var $images = $presenter->getSectionImages($section->value)}
+						<table n:if="isset($images)" class="files-table images-table-sort">
+							<tr n:foreach="$images as $res" id="{$res->id}">
+								{var $img = $basePath.'/data/locations/'.$res->filename}
+								<td style="width: 150px"><a href="{$img}" target="_blank"><img src="{$img|imageGenerator: true, 150, 100}" alt="" /></a></td>
+								<td style="width: 100%;" class="input">
+									{control localeControlForm, 'input', 'locationForm', 'Popisek', 'images_texts['.$res->id.']___text', 'locations_images_files_translations', 'locations_images_files_id', $res->id}
+								</td>
+								<td style="text-align: center;">
+									<div class="input move">
+										<a href="#" class="move"><i></i></a>
+									</div>
+								</td>
+								<td style="text-align: center;">
+									<div class="input remove">
+										<a n:href="deleteImage, $res->id" class="remove delete-image"><i></i></a>
+									</div>
+								</td>
+							</tr>
+						</table>
+						
+						<div id="dropzone-wraper" style="clear: both;">
+							{control dropzone, 'images--'.$section->value, 300, '.jpg,.jpeg,.png'}
+						</div>
+					{/if}
+
+					{if $section->type=='videos'}
+						<div class="head">
+							<h3>Videa</h3>
+							<div class="controls">
+								<a href="" class="move"><i></i></a>
+								<a n:href="deleteSection, $section->id" class="delete"><i></i></a>
+							</div>
+						</div>
+
+						<div class="content-videos youtube-video-list">
+							{var $videos = $presenter->getSectionVideos($section->value)}
+							{foreach $videos as $res}
+								{include youtubeVideo, video=>$res, section=>$section}
+							{/foreach}
+
+							{define youtubeVideo}
+								{var $index = $video ? $video->id : Nette\Utils\Random::generate(10, 'a-zA-Z')}
+
+								<div class="input-cols-3 {isset($class) ? $class}" id="{$index}" data-id="{$index}" style="align-items: flex-end;">
+									<div class="input text">
+										<label>URL</label>
+										<input type="text" name="youtube[{$section->value}][{$index}]" placeholder="" value="{$video ? $video->url}">
+									</div>
+									<div class="input text" style="width: 420px;">
+										<label>Obrázek</label>
+										{var $img = $basePath.'/data/locations/'.($video ? $video->image : '')}
+						
+										<div style="display: flex; align-items: center; height: 55px;">
+											<a href="{$img}" target="_blank" n:if="$video"><img src="{$img|imageGenerator: true, 150, 100}" alt="" style="max-height: 55px; margin: 0 10px 0 0;" /></a>
+											<input type="file" name="youtube_images[{$section->value}][{$index}]">
+										</div>
+									</div>
+									<div class="input text" style="width: calc(66.6666% - 350px)">
+										{control localeControlForm, 'input', 'locationForm', 'Popisek', 'youtube_texts['.$section->value.']['.$index.']___text', 'locations_videos_links_translations', 'locations_videos_links_id', $video ? $video->id}
+									</div>
+									<div class="input move">
+										<a href=""><i></i></a>
+									</div>
+									<div class="input remove">
+										<a n:href="deleteVideo!, $video ? $index : 0" class="delete-video"><i></i></a>
+									</div>
+								</div>
+							{/define}
+
+							{include youtubeVideo, video=>false, class=>'hide'}
+
+							<a href="#" class="add-youtube">+ přidat další video</a>
+						</div>
+					{/if}
+
+					{if $section->type=='files'}
+						<div class="head">
+							<h3>AR</h3>
+							<div class="controls">
+								<a href="" class="move"><i></i></a>
+								<a n:href="deleteSection, $section->id" class="delete"><i></i></a>
+							</div>
+						</div>
+
+						<div class="content-files file-list">
+							{var $files = $presenter->getSectionFiles($section->value)}
+							{foreach $files as $res}
+								{include file, file=>$res, section=>$section}
+							{/foreach}
+
+							{define file}
+								{var $index = $file ? $file->id : Nette\Utils\Random::generate(10, 'a-zA-Z')}
+
+								<div class="input-cols-3 {isset($class) ? $class}" id="{$index}" data-id="{$index}" style="align-items: flex-end;">
+									<div class="input text">
+										<label>AR pro iOS</label>
+										{var $file_t = $basePath.'/data/locations/'.($file ? $file->file_ios : '')}
+						
+										<div style="display: flex; flex-wrap: wrap; align-items: center; height: 55px;">
+											<a href="{$file_t}" target="_blank" n:if="$file">zobrazit</a>
+											<div style="width: 100%;"><input type="file" name="files_files_ios[{$section->value}][{$index}]"></div>
+										</div>
+									</div>
+									<div class="input text">
+										<label>AR pro Android</label>
+										{var $file_t = $basePath.'/data/locations/'.($file ? $file->file_android : '')}
+						
+										<div style="display: flex; flex-wrap: wrap; align-items: center; height: 55px;">
+											<a href="{$file_t}" target="_blank" n:if="$file">zobrazit</a>
+											<div style="width: 100%;"><input type="file" name="files_files_android[{$section->value}][{$index}]"></div>
+										</div>
+									</div>
+									<div class="input text" style="width: calc(66.6666% - 350px)">
+										{control localeControlForm, 'input', 'locationForm', 'Popisek', 'files_texts['.$section->value.']['.$index.']___text', 'locations_files_ars_translations', 'locations_files_ars_id', $file ? $file->id}
+									</div>
+									<div class="input move">
+										<a href=""><i></i></a>
+									</div>
+									<div class="input remove">
+										<a n:href="deleteFile!, $file ? $index : 0" class="delete-file"><i></i></a>
+									</div>
+								</div>
+							{/define}
+
+							{include file, file=>false, class=>'hide'}
+
+							<a href="#" class="add-file">+ přidat další ar</a>
+						</div>
+					{/if}
+
+					{if $section->type=='models'}
+						<div class="head">
+							<h3>Model</h3>
+							<div class="controls">
+								<a href="" class="move"><i></i></a>
+								<a n:href="deleteSection, $section->id" class="delete"><i></i></a>
+							</div>
+						</div>
+
+						<div class="content-models 3d-models-list">
+							{var $models = $presenter->getSectionModels($section->value)}
+							{foreach $models as $res}
+								{include 3dModel, model=>$res, section=>$section}
+							{/foreach}
+
+							{define 3dModel}
+								{var $index = $model ? $model->id : Nette\Utils\Random::generate(10, 'a-zA-Z')}
+
+								<div class="input-cols-3 {isset($class) ? $class}" id="{$index}" data-id="{$index}" style="align-items: flex-end;">
+									<div class="input text">
+										<label>3D model</label>
+										{var $file = $basePath.'/data/locations/'.($model ? $model->file : '')}
+						
+										<div style="display: flex; flex-wrap: wrap; align-items: center; height: 55px;">
+											<a href="{$file}" target="_blank" n:if="$model">zobrazit</a>
+											<div style="width: 100%;"><input type="file" name="models_files[{$section->value}][{$index}]"></div>
+										</div>
+									</div>
+									<div class="input text" style="width: 420px;">
+										<label>Obrázek</label>
+										{var $img = $basePath.'/data/locations/'.($model ? $model->image : '')}
+						
+										<div style="display: flex; align-items: center; height: 55px;">
+											<a href="{$img}" target="_blank" n:if="$model"><img src="{$img|imageGenerator: true, 150, 100}" alt="" style="max-height: 55px; margin: 0 10px 0 0;" /></a>
+											<input type="file" name="models_images[{$section->value}][{$index}]">
+										</div>
+									</div>
+									<div class="input text" style="width: calc(66.6666% - 350px)">
+										{control localeControlForm, 'input', 'locationForm', 'Popisek', 'models_texts['.$section->value.']['.$index.']___text', 'locations_models_files_translations', 'locations_models_files_id', $model ? $model->id}
+									</div>
+									<div class="input move">
+										<a href=""><i></i></a>
+									</div>
+									<div class="input remove">
+										<a n:href="deleteModel!, $model ? $index : 0" class="delete-model"><i></i></a>
+									</div>
+								</div>
+							{/define}
+
+							{include 3dModel, model=>false, class=>'hide'}
+
+							<a href="#" class="add-model">+ přidat další model</a>
+						</div>
+					{/if}
+				</div>
+			{/foreach}
+		{/snippet}
+
+		<div class="btn-group">
+			<a href="#" data-type="text" class="btn create-section">Přidat text</a>
+			<a href="#" data-type="images" class="btn create-section">Přidat fotografie</a>
+			<a href="#" data-type="videos" class="btn create-section">Přidat videa</a>
+			<a href="#" data-type="models" class="btn create-section">Přidat modely</a>
+			<a href="#" data-type="files" class="btn create-section">Přidat ar</a>
+		</div>
+
+		<br><br>
+
+		<div class="inputs-submit">
+			<div class="input storno">
+				<a n:href="default" class="button-icon">
+					<span class="icon transition">
+						<i></i>
+					</span>
+					<span class="label transition">Zrušit</span>
+				</a>
+			</div>
+
+			<div class="input submit">
+				<button class="button-icon" n:name="save">
+					<span class="icon bg-c-2">
+						<i></i>
+					</span>
+					<span class="label bg-c-1 bg-c-2-hover transition">Uložit</span>
+				</button>
+			</div>
+		</div>
+	{/form}
+{/snippetArea}
+
+<script>
+var fixHelper;
+$(document).ready(function(){
+	// Return a helper with preserved width of cells
+	fixHelper = function(e, ui) {
+	    ui.children().each(function() {
+	        $(this).width($(this).width());
+	    });
+	    return ui;
+	};
+
+	initContent();
+});
+
+$(document).on('click', '.create-section', function(e){
+	e.preventDefault();
+
+	var type = $(this).data('type');
+
+	$('body').append('<div class="preloader" style="position: fixed; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: rgba(255, 255, 255, .7); z-index: 9999;"><div style="font-size: 30px;">vytvářím obsah</div></div>');
+
+	for(key in CKEDITOR.instances){
+		if(document.getElementById(key)!==null){
+			document.getElementById(key).value = CKEDITOR.instances[key].getData();
+		}
+	}
+
+	var formData = new FormData($('#frm-locationForm')[0]);
+
+	$.ajax({
+        type:'POST',
+        url: $(this).attr('action'),
+        data:formData,
+        cache:false,
+        contentType: false,
+        processData: false,
+        success:function(data){
+            $.get({link createSection!}, { type: type }, $.nette.success).done(function(){
+				initContent();
+
+				$('body .preloader').remove();
+			});
+        },
+        error: function(data){
+            console.log("error", data);
+        }
+    });
+})
+
+$(document).on('click', '.add-youtube', function(e){
+	e.preventDefault();
+	var random = Math.random().toString(36).substring(2);
+	var html_id = $(this).closest('.content-section').find('.input-cols-3').last().data('id');
+	var html = $(this).closest('.content-section').find('.input-cols-3').last()[0].outerHTML.split(html_id).join(random).replace('input-cols-3 hide', 'input-cols-3');
+
+	$(html).insertAfter($(this).closest('.content-section').find('.input-cols-3').last());
+});
+
+$(document).on('click', '.add-file', function(e){
+	e.preventDefault();
+	var random = Math.random().toString(36).substring(2);
+	var html_id = $(this).closest('.content-section').find('.input-cols-3').last().data('id');
+	var html = $(this).closest('.content-section').find('.input-cols-3').last()[0].outerHTML.split(html_id).join(random).replace('input-cols-3 hide', 'input-cols-3');
+
+	$(html).insertAfter($(this).closest('.content-section').find('.input-cols-3').last());
+});
+
+$(document).on('click', '.add-model', function(e){
+	e.preventDefault();
+	var random = Math.random().toString(36).substring(2);
+	var html_id = $(this).closest('.content-section').find('.input-cols-3').last().data('id');
+	var html = $(this).closest('.content-section').find('.input-cols-3').last()[0].outerHTML.split(html_id).join(random).replace('input-cols-3 hide', 'input-cols-3');
+
+	$(html).insertAfter($(this).closest('.content-section').find('.input-cols-3').last());
+});
+
+$(document).on('click', '.delete-image', function(e){
+	e.preventDefault();
+	$this = $(this);
+
+	if(confirm('Opravdu si přejete smazat fotografii?')){
+		$.get($(this).attr('href'), function(){
+			$this.closest('tr').remove();
+		});
+	}
+});
+
+$(document).on('click', '.delete-video', function(e){
+	e.preventDefault();
+	$this = $(this);
+
+	if(confirm('Opravdu si přejete smazat video?')){
+		$.get($(this).attr('href'), function(){
+			$this.closest('.input-cols-3').remove();
+		});
+	}
+});
+
+$(document).on('click', '.delete-model', function(e){
+	e.preventDefault();
+	$this = $(this);
+
+	if(confirm('Opravdu si přejete smazat model?')){
+		$.get($(this).attr('href'), function(){
+			$this.closest('.input-cols-3').remove();
+		});
+	}
+});
+
+$(document).on('click', '.delete-file', function(e){
+	e.preventDefault();
+	$this = $(this);
+
+	if(confirm('Opravdu si přejete smazat soubor?')){
+		$.get($(this).attr('href'), function(){
+			$this.closest('.input-cols-3').remove();
+		});
+	}
+});
+
+$(document).on('click', '.content-section .head .delete', function(e){
+	e.preventDefault();
+	$this = $(this);
+
+	if(confirm('Opravdu si přejete smazat tuto sekci?')){
+		$.get($(this).attr('href'), function(){
+			$this.closest('.content-section').remove();
+		});
+	}
+});
+
+function initContent(){
+	$("#snippet--sections").sortable({
+		items: '.content-section',
+	    helper: fixHelper,
+	    handle: '.head .controls .move',
+	    update: function(event, ui) {
+	        var items = $(this).sortable("toArray").toString();
+	        $.ajax({
+	            type: 'GET',
+	            url: {link updateSortSections},
+	            data: {"items": items},
+	            success:function(data){
+	                console.log('OK');
+	            },
+	            error:function(){
+	                console.log( "The End." );
+	            }
+	        });
+	    }
+	}).disableSelection();
+
+
+	$("table.images-table-sort").sortable({
+		items: 'tr',
+	    helper: fixHelper,
+	    handle: '> td .move',
+	    update: function(event, ui) {
+	        var items = $(this).sortable("toArray").toString();
+	        $.ajax({
+	            type: 'GET',
+	            url: {link updateSortImages},
+	            data: {"items": items},
+	            success:function(data){
+	                console.log('OK');
+	            },
+	            error:function(){
+	                console.log( "The End." );
+	            }
+	        });
+	    }
+	}).disableSelection();
+
+	$(".youtube-video-list").sortable({
+		items: '.input-cols-3',
+	    helper: fixHelper,
+	    handle: '.move',
+	    update: function(event, ui) {
+	        var items = $(this).sortable("toArray").toString();
+	        $.ajax({
+	            type: 'GET',
+	            url: {link updateSortVideos},
+	            data: {"items": items},
+	            success:function(data){
+	                console.log('OK');
+	            },
+	            error:function(){
+	                console.log( "The End." );
+	            }
+	        });
+	    }
+	}).disableSelection();
+
+	$(".3d-models-list").sortable({
+		items: '.input-cols-3',
+	    helper: fixHelper,
+	    handle: '.move',
+	    update: function(event, ui) {
+	        var items = $(this).sortable("toArray").toString();
+	        $.ajax({
+	            type: 'GET',
+	            url: {link updateSortModels},
+	            data: {"items": items},
+	            success:function(data){
+	                console.log('OK');
+	            },
+	            error:function(){
+	                console.log( "The End." );
+	            }
+	        });
+	    }
+	}).disableSelection();
+
+	$(".file-list").sortable({
+		items: '.input-cols-3',
+	    helper: fixHelper,
+	    handle: '.move',
+	    update: function(event, ui) {
+	        var items = $(this).sortable("toArray").toString();
+	        $.ajax({
+	            type: 'GET',
+	            url: {link updateSortFiles},
+	            data: {"items": items},
+	            success:function(data){
+	                console.log('OK');
+	            },
+	            error:function(){
+	                console.log( "The End." );
+	            }
+	        });
+	    }
+	}).disableSelection();
+
+	$('.dropzone').each(function(){
+		initDropzone('#'+$(this).attr('id'));
+	});
+	
+	$('.ckeditor').ckeditor();
+}
+</script>

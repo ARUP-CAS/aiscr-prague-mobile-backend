@@ -1,0 +1,66 @@
+<link rel="stylesheet" href="{$basePath}/backend/js/plugins/dropzone/dropzone.css">
+
+<textarea name="dropzone-{$name}" id="dropzone-{$name}" class="hide"></textarea>
+<div class="dropzone" id="dropzone-upload-{$name|noescape}"></div>
+
+<script>
+Dropzone.autoDiscover = false;
+
+$(document).ready(function(){
+	initDropzone('#dropzone-upload-{$name|noescape}', {$acceptedFiles});
+});
+</script>
+
+{*<script>
+/*function initDropzone(name){
+    var submit_text = null;
+    $(name).dropzone({
+        //options
+        url: {link saveFile!},
+        autoProcessQueue: true,
+        addRemoveLinks: true,
+        maxFiles: {$maxFiles},
+        maxFilesize: 1024,
+        acceptedFiles: {$acceptedFiles},
+        success: function(file) {
+            console.log(file.xhr.response);
+            //add to log
+            $('#dropzone-' + {$name}).val( $('#dropzone-' + {$name}).val() + ',' + file.xhr.response);
+        },
+        removedfile: function(file) {
+            //remove from server
+            $.ajax({
+                url: {link removeFile!},
+                data: 'filename=' + file.xhr.response
+            });
+            // remove from log
+            $('#dropzone-' + {$name}).val( $('#dropzone-' + {$name}).val().replace(file.xhr.response, ''));
+
+            var _ref;
+            return (_ref = file.previewElement) != null ? _ref.parentNode.removeChild(file.previewElement) : void 0;
+        },
+        totaluploadprogress: function(){
+            if(submit_text==null)
+                submit_text = $('#dropzone-' + {$name}).closest('form').find('input[type="submit"]').val();
+            $('#dropzone-' + {$name}).closest('form').find('input[type="submit"]').val('nahrávám...');
+            $('#dropzone-' + {$name}).closest('form').find('input[type="submit"]').attr('disabled', '');
+        },
+        queuecomplete: function(e){
+            $('#dropzone-' + {$name}).closest('form').find('input[type="submit"]').val(submit_text);
+            $('#dropzone-' + {$name}).closest('form').find('input[type="submit"]').removeAttr('disabled');
+            submit_text = null;
+        },
+
+        //translation
+        dictDefaultMessage: 'Přetáhněte sem soubory nebo klikněte na tlačítko níže',
+        dictFallbackMessage:'Váš prohlížeč nepodporuje upload stylem Drag & Drop',
+        dictInvalidFileType:'Tento typ souboru není povolený.',
+        dictFileTooBig: 'Soubor je příliš velký.',
+        dictResponseError:'Při nahrávání nastala chyba.',
+        dictCancelUpload:'Přerušit nahrávání',
+        dictCancelUploadConfirmation:'Opravdu chcete přerušit nahrávání?',
+        dictRemoveFile:'Odstranit',
+        dictMaxFilesExceeded:'Snažíte se nahrát příliš mnoho souborů',
+    });
+}*/
+</script>*}

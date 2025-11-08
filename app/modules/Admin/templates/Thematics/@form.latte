@@ -1,0 +1,119 @@
+{form thematicForm, enctype=>"multipart/form-data"}
+	<div class="input text">
+		{control localeControlForm, 'input', $form->getName(), 'Nadpis', 'title', 'thematics_translations', 'thematics_id', $presenter->getParameter('id')}
+	</div>
+
+	<div class="input text">
+		{control localeControlForm, 'input', $form->getName(), 'Autor', 'author', 'thematics_translations', 'thematics_id', $presenter->getParameter('id')}
+	</div>
+
+	<div class="input text">
+		{control localeControlForm, 'input', $form->getName(), 'Odborná spolupráce', 'professional_cooperation', 'thematics_translations', 'thematics_id', $presenter->getParameter('id')}
+	</div>
+
+	<div class="input text">
+		{control localeControlForm, 'input', $form->getName(), 'Výtvarná spolupráce', 'artistics_cooperation', 'thematics_translations', 'thematics_id', $presenter->getParameter('id')}
+	</div>
+
+	<div class="input text">
+		{control localeControlForm, 'input', $form->getName(), 'Poděkování', 'thanks', 'thematics_translations', 'thematics_id', $presenter->getParameter('id')}
+	</div>
+
+	<div class="input text">
+		{control localeControlForm, 'input', $form->getName(), 'Charakteristika', 'characteristics', 'thematics_translations', 'thematics_id', $presenter->getParameter('id')}
+	</div>
+
+	<div class="inputs-block">
+		<div class="input-cols-2">
+			<div class="input text">
+				{label latitude /}
+				{input latitude}
+			</div>
+			<div class="input text">
+				{label longitude /}
+				{input longitude}
+			</div>
+		</div>
+	</div>
+
+	<div class="input text">
+		{label locations_ids /}
+		{input locations_ids, class=>'chosen'}
+	</div>
+
+	<div n:class="input, text, $user->identity->group!='a' ? hide">
+		{label image /}
+		{var $img = $basePath.'/data/thematics/'.$row->image}
+
+		<div style="display: flex; align-items: center; height: 55px;">
+			<a href="{$img}" target="_blank" n:if="!empty($row->image)"><img src="{$img|imageGenerator: true, 150, 100}" alt="" style="max-height: 55px; margin: 0 10px 0 0;" /></a>
+			{input image}
+		</div>
+	</div>
+
+	<div n:class="input, text, $user->identity->group!='a' ? hide">
+		{label logo_1 /}
+		{var $img = $basePath.'/data/thematics/'.$row->logo_1}
+
+		<div style="display: flex; align-items: center; height: 55px;">
+			<a href="{$img}" target="_blank" n:if="!empty($row->logo_1)"><img src="{$img|imageGenerator: true, 150, 100}" alt="" style="max-height: 55px; margin: 0 10px 0 0;" /></a>
+			{input logo_1}
+		</div>
+	</div>
+
+	<div n:class="input, text, $user->identity->group!='a' ? hide">
+		{label logo_2 /}
+		{var $img = $basePath.'/data/thematics/'.$row->logo_2}
+
+		<div style="display: flex; align-items: center; height: 55px;">
+			<a href="{$img}" target="_blank" n:if="!empty($row->logo_2)"><img src="{$img|imageGenerator: true, 150, 100}" alt="" style="max-height: 55px; margin: 0 10px 0 0;" /></a>
+			{input logo_2}
+		</div>
+	</div>
+
+	<div n:class="input, text, $user->identity->group!='a' ? hide">
+		{label logo_3 /}
+		{var $img = $basePath.'/data/thematics/'.$row->logo_3}
+
+		<div style="display: flex; align-items: center; height: 55px;">
+			<a href="{$img}" target="_blank" n:if="!empty($row->logo_3)"><img src="{$img|imageGenerator: true, 150, 100}" alt="" style="max-height: 55px; margin: 0 10px 0 0;" /></a>
+			{input logo_3}
+		</div>
+	</div>
+
+	<div n:class="input, text, $user->identity->group!='a' ? hide">
+		{label logo_4 /}
+		{var $img = $basePath.'/data/thematics/'.$row->logo_4}
+
+		<div style="display: flex; align-items: center; height: 55px;">
+			<a href="{$img}" target="_blank" n:if="!empty($row->logo_4)"><img src="{$img|imageGenerator: true, 150, 100}" alt="" style="max-height: 55px; margin: 0 10px 0 0;" /></a>
+			{input logo_4}
+		</div>
+	</div>
+
+	<div class="inputs-submit">
+		<div class="input storno">
+			<a n:href="default" class="button-icon">
+				<span class="icon transition">
+					<i></i>
+				</span>
+				<span class="label transition">Zrušit</span>
+			</a>
+		</div>
+
+		<div class="input submit">
+			<button class="button-icon" n:name="save">
+				<span class="icon bg-c-2">
+					<i></i>
+				</span>
+				<span class="label bg-c-1 bg-c-2-hover transition">Uložit</span>
+			</button>
+		</div>
+	</div>
+{/form}
+
+<script>
+$(document).ready(function(){
+	
+});
+</script>

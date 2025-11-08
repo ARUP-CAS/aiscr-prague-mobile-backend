@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>{ifset #title}{include title|striptags} | {/ifset}Visualio CMS</title>
+
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="robots" content="noindex,follow">
+
+	<link rel="shortcut icon" href="{$basePath}/backend/img/favicon.ico" />
+	<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700&amp;subset=latin,latin-ext" />
+	<link rel="stylesheet" type="text/css" href="{$basePath}/backend/css/bootstrap.css" />
+	<link rel="stylesheet" type="text/css" href="{$basePath}/backend/css/plugins/font-awesome.min.css" />
+	<link rel="stylesheet" type="text/css" href="{$basePath}/backend/css/main.css" />
+	<link rel="stylesheet" type="text/css" href="{$basePath}/backend/css/bootstrap-datetimepicker.css" />
+
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
+	<script src="{$basePath}/backend/js/ckeditor4/ckeditor.js"></script>
+	<script src="{$basePath}/backend/js/ckeditor4/adapters/jquery.js"></script>
+	<script src="{$basePath}/backend/js/netteForms.js"></script>
+	<script src="{$basePath}/backend/js/bootstrap.min.js"></script>
+	<script src="{$basePath}/backend/js/bootstrap-tagsinput.min.js"></script>
+	<script src="{$basePath}/backend/js/bootstrap-datetimepicker.min.js"></script>
+	<script src="{$basePath}/backend/js/chosen/chosen.jquery.min.js"></script>
+	<script src="{$basePath}/backend/js/jquery.nette.js"></script>
+	<script src="{$basePath}/backend/js/plugins/dropzone/dropzone.js"></script>
+	<script src="{$basePath}/backend/js/plugins/dropzone/dropzone-amd-module.min.js"></script>
+	<script src="{$basePath}/backend/js/main.js"></script>
+	{ifset #head}{include head}{/ifset}
+</head>
+<body data-basepath="{$basePath}">
+
+<header class="header">
+	<div class="logo visualio">
+		<img src="{$basePath}/backend/img/logo.png" alt="VISUALIO" />
+	</div>
+
+	<div class="info">
+		<div class="user">
+			<i class="icon"></i>
+			<span class="name">{$user->identity->firstname} {$user->identity->lastname}</span> |
+			<a n:href="Users:changePassword">Změnit heslo</a> | 
+			<a n:href="Sign:out" title="Odhlásit se">Odhlásit se</a>
+		</div>
+	</div>
+</header>
+
+<div class="sidebar">
+	<div class="scroll-wrap">
+		<nav id="nav-main">
+			{if $user->identity->group=='a'}
+				<ul>
+					<li n:class="$presenter->isLinkCurrent('Default:*') ? active, board"><a n:href="Default:" class="bg-c-1-hover">Nástěnka</a></li>
+					<li class="pages {$presenter->isLinkCurrent('Locations:*') ? active}"><a n:href="Locations:" class="bg-c-1-hover">Lokality</a></li>
+					<li class="pages {$presenter->isLinkCurrent('Thematics:*') ? active}"><a n:href="Thematics:" class="bg-c-1-hover">Vycházky</a></li>
+					<li class="pages {$presenter->isLinkCurrent('Settings:*') ? active}"><a n:href="Settings:" class="bg-c-1-hover">Nastavení</a></li>
+					<li class="users {$presenter->isLinkCurrent('Users:*') ? active}"><a n:href="Users:" class="bg-c-1-hover">Uživatelé</a></li>
+				</ul>
+			{/if}
+
+			{if $user->identity->group=='u'}
+				<ul>
+					<li n:class="$presenter->isLinkCurrent('Default:*') ? active, board"><a n:href="Default:" class="bg-c-1-hover">Nástěnka</a></li>
+					<li class="pages {$presenter->isLinkCurrent('Locations:*') ? active}"><a n:href="Locations:" class="bg-c-1-hover">Lokality</a></li>
+					<li class="pages {$presenter->isLinkCurrent('Thematics:*') ? active}"><a n:href="Thematics:" class="bg-c-1-hover">Vycházky</a></li>
+				</ul>
+			{/if}
+		</nav>
+	</div>
+</div>
+
+<div class="content-main">
+	<div n:foreach="$flashes as $flash" class="flash {$flash->type}">{$flash->message}</div>
+	
+	{include content}
+</div>
+
+</body>
+</html>

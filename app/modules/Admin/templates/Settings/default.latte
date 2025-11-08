@@ -1,0 +1,16 @@
+{block content}
+
+<h1 n:block="title"><strong>Nastavení</strong></h1>
+
+{include '@form.latte'}
+
+<h3 style="clear: both; margin: 20px 0 0 0;">Historie GEO JSON</h3>
+
+<table style="width: 100%;">
+	{foreach $files as $file => $time}
+		<tr>
+			<td style="padding: 1px 0; width: 170px;">{date("d. m. Y H:i:s", $time)}</td>
+			<td style="padding: 1px 0;"><a href="{$basePath.$presenter->filePath.$file}" target="_blank">{$file}</a></td>
+		</tr>
+	{/foreach}
+</table>

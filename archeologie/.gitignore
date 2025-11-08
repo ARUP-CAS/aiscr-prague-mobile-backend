@@ -1,0 +1,4 @@
+app/config/local.neon
+app/config/config.local.neon
+vendor/*
+www/data/*

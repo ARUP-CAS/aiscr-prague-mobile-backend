@@ -1,0 +1,79 @@
+{block #content}
+<h1 n:block="title"><strong>Lokality</strong></h1>
+	
+<div class="list-general">
+
+	<a n:href="add" class="button-icon">
+		<span class="icon transition">
+			<i>+</i>
+		</span>
+		<span class="label transition">Přidat lokalitu</span>
+	</a>
+
+	<p n:if="count($data)==0" class="clr"><br>Žádné záznamy nebyly nalezeny!</p>
+
+	<table class="data-list" n:if="count($data)>0">
+        <tr>
+            <th></th>
+            {*<th style="width: 200px">Datum vložení / změny</th>*}
+            {*<th>Zobrazeno</th>
+            <th>Top</th>
+            <th></th>*}
+            <th>Zobrazeno</th>
+            <th style="width: 90px;"></th>
+            <th n:if="in_array('a', $user->getIdentity()->getRoles())"></th>
+            {*<th n:if="in_array('a', $user->getIdentity()->getRoles())"></th>*}
+            <th></th>
+            <th n:if="in_array('a', $user->getIdentity()->getRoles())"></th>
+        </tr>
+        <tbody>
+            {foreach $data as $row}
+                <tr id="{$row->id}">
+                    <td>
+                    	<a n:href="edit, $row->id" class="title">{$row->title}</a>
+                    </td>
+                    {*<td class="text-center">{$row->date_add|date:'d.m.Y H:i:s'}<br>{$row->date_edit|date:'d.m.Y H:i:s'}</td>*}
+                    <td class="text-center">{$row->show ? 'ANO' : 'NE'}</td>
+                    {*<td class="text-center">{$row->top ? 'ANO' : 'NE'}</td>
+                    <td class="action copy"><a n:href="copy, $row->id" title="Vytvořit kopii článku"><i></i></a></td>*}
+                    <td><a href="#" onclick="window.open({link preview, $row->id}, '_blank', 'location=yes,height=750,width=410,scrollbars=yes,status=yes');">NÁHLED</a></td>
+                    <td class="action eye" n:if="in_array('a', $user->getIdentity()->getRoles())"><a n:href="show, $row->id" title="Skrýt/publikovat"><i></i></a></td>
+                    <td class="action move" n:if="in_array('a', $user->getIdentity()->getRoles())"><a href="#"><i></i></a></td>
+                    <td class="action edit"><a n:href="edit, $row->id"><i></i></a></td>
+                    <td class="action remove" n:if="in_array('a', $user->getIdentity()->getRoles())"><a n:href="delete, $row->id" onclick="return confirm('Opravdu si přejete smazat tento záznam?');"><i></i></a></td>
+                </tr>
+            {/foreach}
+        </tbody>
+    </table>
+</div>
+
+<script>
+$(document).ready(function(){
+    // Return a helper with preserved width of cells
+    var fixHelper = function(e, ui) {
+        ui.children().each(function() {
+            $(this).width($(this).width());
+        });
+        return ui;
+    };
+
+    $(".data-list tbody").sortable({
+        helper: fixHelper,
+        handle: '> .move',
+        update: function(event, ui) {
+            var items = $(this).sortable("toArray").toString();
+            $.ajax({
+                type: 'GET',
+                url: {link updateSort},
+                data: {"items": items},
+                success:function(data){
+                    console.log('OK');
+                },
+                error:function(){
+                    console.log( "The End." );
+                }
+            });
+        }
+    }).disableSelection();
+});
+</script>
